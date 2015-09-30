@@ -3,6 +3,7 @@ from flask import jsonify, redirect, request, Blueprint
 from sqlalchemy import and_
 
 from app import db
+from decorators import login_required
 from forms import GPSForm
 from models import GPS, User
 
@@ -11,6 +12,7 @@ api = Blueprint('api', __name__, template_folder='templates',
 
 
 @api.route('/gps/', methods=['POST'])
+@login_required
 def post_gps():
     form = GPSForm()
     if form.validate_on_submit():
@@ -23,6 +25,7 @@ def post_gps():
     
 
 @api.route('/gps/', methods=['GET'])
+@login_required
 def get_gps():
     last = db.session.query(GPS).order_by(GPS.timestamp.desc()).first()
     return jsonify(
