@@ -33,7 +33,7 @@ def get_gps():
     )
 
 
-@api.route('/sign_in', methods=['POST'])
+@api.route('/sign_in/', methods=['POST'])
 def post_sign_in():
     email = request.values.get('email')
     password = request.values.get('password')
@@ -43,3 +43,13 @@ def post_sign_in():
         session['user'] = login.id
         return jsonify(result='success', user_id=login.id)
     return jsonify(result='fail')
+
+
+@api.route('/sign_out/', methods=['POST'])
+@login_required
+def post_sign_out():
+    if 'user' in session:
+        session.pop('user', None)
+        return jsonify(result='success')
+    return jsonify(result='fail')
+
