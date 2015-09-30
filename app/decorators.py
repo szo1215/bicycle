@@ -9,6 +9,6 @@ def login_required(f):
     def decorated_function(*args, **kwargs):
         if 'user' in session:
             return f(*args, **kwargs)
-        return redirect(url_for('login.sign_in'))
+        return redirect(url_for('login.get_sign_up'))
     return decorated_function
 
