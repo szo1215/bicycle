@@ -4,7 +4,7 @@ from sqlalchemy import and_
 
 from app import db
 from decorators import login_required
-from forms import GPSForm
+from forms import GPSForm, LoginForm
 from models import GPS, User
 
 api = Blueprint('api', __name__, template_folder='templates', 
@@ -14,7 +14,7 @@ api = Blueprint('api', __name__, template_folder='templates',
 @api.route('/gps/', methods=['POST'])
 @login_required
 def post_gps():
-    form = GPSForm()
+    form = GPSForm(csrf_enabled=False)
     if form.validate_on_submit():
         gps = GPS()
         form.populate_obj(gps)
@@ -52,4 +52,13 @@ def post_sign_out():
         session.pop('user', None)
         return jsonify(result='success')
     return jsonify(result='fail')
+
+
+@api.route('/riding', methods=['POST'])
+@login_required
+def post_riding():
+    riding = Riding(user_id=session['user'])
+    db.session.add(riding)
+    db.session.commit()
+    return jsonify(result='success', riding_id=riding.id)
 

@@ -11,6 +11,7 @@ install_requires = [
     'psycopg2==2.5',
     'WTForms==2.0.2',
     'Flask-WTF==0.12',
+    'bcrypt==1.1.0',
 ]
 
 
