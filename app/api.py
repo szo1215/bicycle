@@ -4,7 +4,7 @@ from sqlalchemy import and_
 
 from app import db
 from decorators import login_required
-from forms import GPSForm, LoginForm
+from forms import GPSForm
 from models import GPS, User
 
 api = Blueprint('api', __name__, template_folder='templates', 

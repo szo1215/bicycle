@@ -20,8 +20,8 @@ class EncryptPasswordField(PasswordField):
         return hashpw(self.password, self.data) == self.data
  
 
-# 기본적인 LoginForm
-class LoginForm(Form):
+# 기본적인 SignUpForm
+class SignUpForm(Form):
     email = TextField(u'이메일', [Email(message='이메일 형식이 아닙니다.')])
     name = TextField(u'이름', [Length(max=10)])
     password = EncryptPasswordField(u'비밀번호')
