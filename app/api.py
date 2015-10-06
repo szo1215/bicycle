@@ -27,10 +27,18 @@ def post_gps():
 @api.route('/gps/', methods=['GET'])
 @login_required
 def get_gps():
-    last = db.session.query(GPS).order_by(GPS.timestamp.desc()).first()
-    return jsonify(
-        {c.name: getattr(last, c.name) for c in last.__table__.columns}
-    )
+    riding_id = request.values.get('riding_id')
+    last_gps = db.session.query(GPS)\
+                 .filter(GPS.riding_id == riding_id)\
+                 .order_by(GPS.timestamp.desc()).first()
+
+    if last_gps is not None:
+        return jsonify(
+            {c.name: getattr(last_gps, c.name)
+            for c in last_gps.__table__.columns}
+        )
+    else:
+        return jsonify(result="fail")
 
 
 @api.route('/sign_in/', methods=['POST'])
