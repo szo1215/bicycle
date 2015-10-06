@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+from bcrypt import hashpw
 from flask import jsonify, redirect, request, Blueprint
 from sqlalchemy import and_
 
@@ -45,9 +46,9 @@ def get_gps():
 def post_sign_in():
     email = request.values.get('email')
     password = request.values.get('password')
-    login = db.session.query(User).filter_by(and_(email=email,
-                                                  password=password)).first()
-    if login is not None:
+    hashed = db.session.query(User).filter_by(email=email).first().password
+
+    if hashpw(password, hashed) == hashed:
         session['user'] = login.id
         return jsonify(result='success', user_id=login.id)
     return jsonify(result='fail')
