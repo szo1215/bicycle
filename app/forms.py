@@ -7,12 +7,18 @@ from wtforms.validators import Email, Length
 
 # 패스워드 암호화
 class EncryptPasswordField(PasswordField):
+    password = None
+
     def process_formdata(self, valuelist):
-        self.data = hashpw(valuelist[0].encode('utf-8'), gensalt())
+        if valuelist:
+            self.data = hashpw(valuelist[0].encode('utf-8'), gensalt())
+            self.password = valuelist[0].encode('utf-8')
 
     def pre_validate(self, form):
-        pass
-
+        if self.password < 10 or self.password > 15:
+            return False
+        return hashpw(self.password, self.data) == self.data
+ 
 
 # 기본적인 LoginForm
 class LoginForm(Form):
