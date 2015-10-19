@@ -37,7 +37,7 @@ class GPS(db.Model):
     id = Column(Integer, primary_key=True)
     riding_id = Column(Integer, ForeignKey('riding.id'))
     latitude = Column(Float)
-    longtitude = Column(Float)
+    longitude = Column(Float)
     altitude = Column(Float)
     horizontal_accuracy = Column(Float)
     vertical_accuracy = Column(Float)

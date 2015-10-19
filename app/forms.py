@@ -30,7 +30,7 @@ class SignUpForm(Form):
 # GPS Form
 class GPSForm(Form):
     latitude = DecimalField(label=u'위도', places=8)
-    longtitude = DecimalField(label=u'경도', places=8)
+    longitude = DecimalField(label=u'경도', places=8)
     altitude = DecimalField(label=u'고도', places=8)
     horizontal_accuracy = DecimalField(label=u'수평 정확도', places=8)
     vertical_accuracy = DecimalField(label=u'수직 정확도', places=8)
