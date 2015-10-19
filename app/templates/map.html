@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block title %} map {% endblock %}
+{% block body %}
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    #map {
+      height: 100%;
+    }
+  </style>
+  <div id="map"></div>
+  <script>
+    var map;
+    function initMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 37.513939, lng: 126.883864},
+        zoom: 8
+        });
+    }
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACtYXfgytJqOg762NyUUxmjJbw7Fppl1I&callback=initMap"></script>
+{% endblock %}
