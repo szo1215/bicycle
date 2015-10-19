@@ -13,7 +13,7 @@ login = Blueprint('login', __name__, template_folder='templates')
 @login.route('/sign_up', methods=['GET'])
 def get_sign_up():
     form = SignUpForm()
-    return render_template('login.html', form=form)
+    return render_template('sign_up.html', form=form)
 
 
 # 회원가입
@@ -26,4 +26,4 @@ def post_sign_up():
         db.session.add(user)
         db.session.commit()
         return redirect(url_for('.get_sign_up'))
-    return render_template('login.html', form=form)
+    return render_template('sign_up.html', form=form)
