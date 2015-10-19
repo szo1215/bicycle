@@ -12,6 +12,9 @@ install_requires = [
     'WTForms==2.0.2',
     'Flask-WTF==0.12',
     'bcrypt==1.1.0',
+    'gpxpy==1.0.0',
+    'requests==2.8.1',
+    'redis==2.10.3',
 ]
 
 
