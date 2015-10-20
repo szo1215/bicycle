@@ -29,6 +29,7 @@ class Riding(db.Model):
     created_date = Column(DateTime(timezone=True),
                           nullable=False, default=now(), index=True)
     gpses = relationship('GPS', backref='riding')
+    riding_ranks = relationship('RidingRank', backref='riding_ranks')
 
 
 class GPS(db.Model):
@@ -43,3 +44,14 @@ class GPS(db.Model):
     vertical_accuracy = Column(Float)
     timestamp = Column(DateTime(timezone=True),
                        nullable=False, default=now(), index=True)
+
+
+class RidingRank(db.Model):
+    __tablename__ = 'riding_rank'
+
+    id = Column(Integer, primary_key=True)
+    created_date = Column(DateTime(timezone=True),
+                          nullable=False, default=now(), index=True)
+    riding_id = Column(Integer, ForeignKey('riding.id'))
+    avg_speed = Column(Float)
+
