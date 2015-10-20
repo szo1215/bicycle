@@ -3,7 +3,7 @@ import math
 import redis
 
 from app.app import db
-from app.models import Riding, GPS, User
+from app.models import Riding, RidingRank, GPS, User
 
 ONE_DEGREE = 1000. * 10000.8 / 90.
 pool = redis.ConnectionPool(host='localhost', port=6379, db=0)
@@ -26,4 +26,16 @@ for r in ridings:
             y = (second.longitude - first.longitude) * coef
             distance += math.sqrt(x * x + y * y) * ONE_DEGREE
 
-    print float(distance / 1000) / (float((end_time - start_time).seconds) / float(3600))
+    avg_speed = float(distance / 1000) / (float((end_time - start_time).seconds) / float(3600))
+    riding_rank = RidingRank(riding_id=r.id, avg_speed=avg_speed)
+    db.session.add(riding_rank)
+    db.session.commit()
+
+    ranks = db.session.query(RidingRank).order_by(RidingRank.avg_speed.desc()).limit(5).offset(0).all()
+
+    for rank in ranks:
+        print "riding id : {0} avg speed {1}".format(rank.riding_id, rank.avg_speed)
+    print "\n"
+
+db.session.query(RidingRank).delete()
+db.session.commit()
