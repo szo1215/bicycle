@@ -13,7 +13,6 @@ api = Blueprint('api', __name__, template_folder='templates',
 
 
 @api.route('/gps/', methods=['POST'])
-@login_required
 def post_gps():
     form = GPSForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -26,7 +25,6 @@ def post_gps():
     
 
 @api.route('/gps/', methods=['GET'])
-@login_required
 def get_gps():
     riding_id = request.values.get('riding_id')
     last_gps = db.session.query(GPS)\
@@ -46,16 +44,15 @@ def get_gps():
 def post_sign_in():
     email = request.values.get('email')
     password = request.values.get('password')
-    hashed = db.session.query(User).filter_by(email=email).first().password
+    user = db.session.query(User).filter_by(email=email).first()
 
-    if hashpw(password, hashed) == hashed:
-        session['user'] = login.id
-        return jsonify(result='success', user_id=login.id)
+    if hashpw(str(password), str(user.password)) == str(user.password):
+        session['user'] = user.id
+        return jsonify(result='success', user_id=user.id)
     return jsonify(result='fail')
 
 
 @api.route('/sign_out/', methods=['POST'])
-@login_required
 def post_sign_out():
     if 'user' in session:
         session.pop('user', None)
@@ -64,7 +61,6 @@ def post_sign_out():
 
 
 @api.route('/riding', methods=['POST'])
-@login_required
 def post_riding():
     riding = Riding(user_id=session['user'])
     db.session.add(riding)

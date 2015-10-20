@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 from bcrypt import gensalt, hashpw
 from flask_wtf import Form
-from wtforms.fields import DecimalField, TextField, PasswordField
+from wtforms.fields import DecimalField, IntegerField, TextField, PasswordField
 from wtforms.validators import Email, Length
 
 
@@ -34,4 +34,4 @@ class GPSForm(Form):
     altitude = DecimalField(label=u'고도', places=8)
     horizontal_accuracy = DecimalField(label=u'수평 정확도', places=8)
     vertical_accuracy = DecimalField(label=u'수직 정확도', places=8)
-
+    riding_id = IntegerField(label='')

@@ -1,0 +1,14 @@
+.error-password {
+  display: none;
+}
+
+.show-message {
+  display: block;
+}
+
+.show {
+  height: 34px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+

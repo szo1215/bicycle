@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block title %} 로그인 {% endblock %}
+{% block body %}
+<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-3.3.5-dist/css/bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='sign_up.css')}}">
+<div class="panel panel-default">
+  <div class="panel-heading">로그인</div>
+  <div class="panel-body">
+    <form class="form-horizontal" action="{{ url_for('web.post_login')}}" method="POST">
+      {{ form.csrf_token }}
+      <div class="form-group">
+        <label for="inputEmail3" class="col-sm-2 control-label">
+          {{ form.email.label }}
+        </label>
+        <div class="col-sm-7">
+          {{ form.email(class_='form-control', placeholder='이메일을 입력하세요.', required=required) }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="inputPassword3" class="col-sm-2 control-label">
+          {{ form.password.label }}
+        </label>
+        <div class="col-sm-7">
+          {{ form.password(class_='form-control', placeholder='비밀번호를 입력하세요.(최소 10자에서 최대 15자까지)', required=required)}}
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" class="btn btn-primary send">로그인</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script src="{{url_for('static', filename='jquery-1.11.3.min.js')}}"></script>
+<script src="{{ url_for('static', filename='bootstrap-3.3.5-dist/js/bootstrap.min.js') }}"></script>
+{% endblock %}
