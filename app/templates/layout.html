@@ -1,8 +1,9 @@
-<!doctype html>
+<!DOCTYPE HTML>
 <html>
   <head>
     <meta charset="utf-8" />
     <title>{% block title %}{% endblock %}</title>
+    <script src="{{url_for('static', filename='jquery-1.11.3.min.js')}}"></script>
   </head>
   <body>
     {% block body %}

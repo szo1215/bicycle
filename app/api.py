@@ -1,12 +1,12 @@
 # -*- coding:utf-8 -*-
 from bcrypt import hashpw
-from flask import jsonify, redirect, request, Blueprint
+from flask import jsonify, redirect, request, session, Blueprint
 from sqlalchemy import and_
 
 from app import db
 from decorators import login_required
 from forms import GPSForm
-from models import GPS, User
+from models import GPS, Riding, User
 
 api = Blueprint('api', __name__, template_folder='templates', 
                 url_prefix='/api')

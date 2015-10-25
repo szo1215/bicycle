@@ -6,7 +6,7 @@ from app.app import db
 from app.models import Riding, GPS, User
 
 start_time = time.time()
-gpx_file = open("test_riding.gpx")
+gpx_file = open("test.gpx")
 gpx = gpxpy.parse(gpx_file)
 
 for i in range(1, 50):
