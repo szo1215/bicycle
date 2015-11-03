@@ -9,10 +9,12 @@ start_time = time.time()
 gpx_file = open("test.gpx")
 gpx = gpxpy.parse(gpx_file)
 
-for i in range(1, 50):
-    r = Riding(user_id=2, title='good')
-    db.session.add(r)
-db.session.commit()
+for user in db.session.query(User).all():
+    for r in range(0, 20):
+        r = Riding(user=user, title='good')
+        db.session.add(r)
+        time.sleep(2)
+    db.session.commit()
 
 ridings = db.session.query(Riding).all()
 
@@ -29,3 +31,4 @@ for r in ridings:
     db.session.commit()
 
 print "%s seconds" % (time.time() - start_time)
+

@@ -1,30 +1,40 @@
 {% extends "layout.html" %}
 {% block title %} map {% endblock %}
+{% block head %}
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACtYXfgytJqOg762NyUUxmjJbw7Fppl1I"></script>
+  <script src="{{url_for('static', filename='gmaps.js')}}"></script>
+  <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='map.css')}}">
+{% endblock %}
 {% block body %}
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
-    #map {
-      width: 100px;
-      height: 200px;
-      height: 100%;
-    }
-  </style>
   <div id="map"></div>
   <script>
     $(document).ready(function() {
-    });
+      var map = new GMaps({
+        el: '#map',
+        lat: 37.530705,
+        lng: 127.006359
+      });
 
-    var map;
-    function initMap() {
-      map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 37.513939, lng: 126.883864},
-        zoom: 8
-        });
-    }
+      var path;
+
+      $.ajax({
+        type:'GET',
+        url:"http://localhost:5000/tracking",
+      }).done(
+        function(data) {
+          path = data.result;
+          
+          map.drawPolyline({
+            path: path,
+            strokeColor: '#131540',
+            strokeOpacity: 0.6,
+            strokeWeight: 6
+          });
+        }
+      ).fail(
+        function(error) {
+        }
+      );
+    });
   </script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACtYXfgytJqOg762NyUUxmjJbw7Fppl1I&callback=initMap"></script>
 {% endblock %}
