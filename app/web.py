@@ -1,4 +1,7 @@
 # -*- coding:utf-8 -*-
+import math
+import time
+
 from bcrypt import hashpw
 from flask import (jsonify, redirect, render_template, request, session, 
                    url_for, Blueprint)
@@ -7,6 +10,8 @@ from app import db
 from decorators import login_required
 from forms import SignUpForm
 from models import GPS, Riding, User
+
+ONE_DEGREE = 1000. * 10000.8 / 90.
 
 web = Blueprint('web', __name__, template_folder='templates')
 
@@ -43,17 +48,39 @@ def post_logout():
         session.pop('user', None)
     return redirect(url_for('.index'))
 
-@web.route('/tracking', methods=['GET'])
+
+@web.route('/last_riding_info', methods=['GET'])
 @login_required
-def get_tracking():
+def get_last_riding_info():
+    distance = 0
     sub = db.session.query(Riding.id)\
                     .join(User)\
+                    .filter_by(id=session['user'])\
                     .order_by(Riding.created_date.desc())\
                     .limit(1)\
                     .subquery('last')
-    gpses = db.session.query(GPS).filter(GPS.riding_id == sub.c.id).all()
-    result = []
+    gpses = db.session.query(GPS)\
+                      .filter_by(riding_id=sub.c.id)\
+                      .order_by(GPS.id).all()
+
+    tracking = []
     for gps in gpses:
-        result.append([gps.latitude, gps.longitude])
-    return jsonify(result=result)
+        tracking.append([gps.latitude, gps.longitude])
+
+    start_time = gpses[0].timestamp
+    end_time = gpses[len(gpses)-1].timestamp
+    
+    for i, g in enumerate(gpses):
+        if i+1 != len(gpses):
+            first = gpses[i]
+            second = gpses[i+1]
+            coef = math.cos(second.latitude / 180. * math.pi)
+            x = second.latitude - first.latitude
+            y = (second.longitude - first.longitude) * coef
+            distance += math.sqrt(x * x + y * y) * ONE_DEGREE
+
+    avg_speed = round(float(distance / 1000) / (float((end_time - start_time).seconds) / float(3600)), 1)
+    distance = round(float(distance / 1000), 1)
+
+    return jsonify(distance=distance, avg_speed=avg_speed, tracking=tracking)
 

@@ -6,24 +6,25 @@
   <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='map.css')}}">
 {% endblock %}
 {% block body %}
+  <div class="container">
+  </div>
   <div id="map"></div>
   <script>
     $(document).ready(function() {
       var map = new GMaps({
-        el: '#map',
-        lat: 37.530705,
-        lng: 127.006359
+          el: '#map',
+          lat: 37.566609,
+          lng: 126.978435,
+          zoom: 14,
       });
-
-      var path;
 
       $.ajax({
         type:'GET',
-        url:"http://localhost:5000/tracking",
+        url:"http://localhost:5000/last_riding_info",
       }).done(
         function(data) {
-          path = data.result;
-          
+          var path = data.tracking;
+
           map.drawPolyline({
             path: path,
             strokeColor: '#131540',
