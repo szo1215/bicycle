@@ -1,5 +1,9 @@
 {% extends "layout.html" %}
 {% block title %} 로그인 {% endblock %}
+{% block head %}
+  <script src="{{url_for('static', filename='jquery-1.11.3.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='bootstrap-3.3.5-dist/js/bootstrap.min.js') }}"></script>
+{% endblock %}
 {% block body %}
 <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-3.3.5-dist/css/bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='sign_up.css')}}">
@@ -32,6 +36,4 @@
     </form>
   </div>
 </div>
-<script src="{{url_for('static', filename='jquery-1.11.3.min.js')}}"></script>
-<script src="{{ url_for('static', filename='bootstrap-3.3.5-dist/js/bootstrap.min.js') }}"></script>
 {% endblock %}

@@ -53,6 +53,9 @@ def post_logout():
 @login_required
 def get_last_riding_info():
     distance = 0
+    avg_speed = 0
+    tracking = []
+
     sub = db.session.query(Riding.id)\
                     .join(User)\
                     .filter_by(id=session['user'])\
@@ -62,25 +65,25 @@ def get_last_riding_info():
     gpses = db.session.query(GPS)\
                       .filter_by(riding_id=sub.c.id)\
                       .order_by(GPS.id).all()
+    if gpses:
+        for gps in gpses:
+            tracking.append([gps.latitude, gps.longitude])
 
-    tracking = []
-    for gps in gpses:
-        tracking.append([gps.latitude, gps.longitude])
+        start_time = gpses[0].timestamp
+        end_time = gpses[len(gpses)-1].timestamp
 
-    start_time = gpses[0].timestamp
-    end_time = gpses[len(gpses)-1].timestamp
-    
-    for i, g in enumerate(gpses):
-        if i+1 != len(gpses):
-            first = gpses[i]
-            second = gpses[i+1]
-            coef = math.cos(second.latitude / 180. * math.pi)
-            x = second.latitude - first.latitude
-            y = (second.longitude - first.longitude) * coef
-            distance += math.sqrt(x * x + y * y) * ONE_DEGREE
+        for i, g in enumerate(gpses):
+            if i+1 != len(gpses):
+                first = gpses[i]
+                second = gpses[i+1]
+                coef = math.cos(second.latitude / 180. * math.pi)
+                x = second.latitude - first.latitude
+                y = (second.longitude - first.longitude) * coef
+                distance += math.sqrt(x * x + y * y) * ONE_DEGREE
 
-    avg_speed = round(float(distance / 1000) / (float((end_time - start_time).seconds) / float(3600)), 1)
-    distance = round(float(distance / 1000), 1)
+        avg_speed = round(float(distance / 1000) / 
+                    (float((end_time - start_time).seconds) / float(3600)), 1)
+        distance = round(float(distance / 1000), 1)
 
     return jsonify(distance=distance, avg_speed=avg_speed, tracking=tracking)
 
