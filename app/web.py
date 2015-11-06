@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+from datetime import datetime
 import math
 import time
 
@@ -14,6 +15,17 @@ from models import GPS, Riding, User
 ONE_DEGREE = 1000. * 10000.8 / 90.
 
 web = Blueprint('web', __name__, template_folder='templates')
+
+def serialize(Object, attribute=[]):
+    d = {}
+
+    for key in Object.__table__.columns.keys():
+        if key in attribute:
+            value = Object.__getattribute__(key)
+            if isinstance(value, datetime):
+                value = value.strftime('%Y-%m-%d %H-%m')
+            d[key] = value
+    return d
 
 
 @web.route('/')
@@ -86,4 +98,13 @@ def get_last_riding_info():
         distance = round(float(distance / 1000), 1)
 
     return jsonify(distance=distance, avg_speed=avg_speed, tracking=tracking)
+
+
+@web.route('/friends', methods=['GET'])
+@login_required
+def get_friends():
+    return jsonify(
+        friends=[serialize(u, ['name'])
+            for u in db.session.query(User).all()]
+    )
 

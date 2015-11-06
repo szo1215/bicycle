@@ -3,13 +3,19 @@
 {% block head %}
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACtYXfgytJqOg762NyUUxmjJbw7Fppl1I"></script>
   <script src="{{url_for('static', filename='gmaps.js')}}"></script>
+  <script src="{{url_for('static', filename='select2-3.5.3/select2.min.js')}}"></script>
+  <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='select2-3.5.3/select2.css')}}">
   <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='map.css')}}">
   <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-3.3.5-dist/css/bootstrap.min.css') }}">
   <link rel="stylesheet" href="{{url_for('static', filename='web.css')}}">
 {% endblock %}
 {% block body %}
 <div class="container">
-  <nav class="navbar navbar-default"></nav>
+  <nav class="navbar navbar-default">
+    <select class="js-data-example-ajax">
+      <option value="3620194" selected="selected">select2/select2</option>
+    </select>
+  </nav>
   <div class="column_left">
     <div id="map"></div>
   </div>
@@ -69,6 +75,9 @@
 </div>
   <script>
     $(document).ready(function() {
+      $('.js-data-example-ajax').select2({
+      });
+
       var map = new GMaps({
           el: '#map',
           lat: 37.566609,
