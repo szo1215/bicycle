@@ -16,6 +16,7 @@ install_requires = [
     'requests==2.8.1',
     'redis==2.10.3',
     'flask-redis==0.1.0',
+    'fabric==1.10',
 ]
 
 
