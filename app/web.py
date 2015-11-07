@@ -103,9 +103,7 @@ def get_last_riding_info():
 @web.route('/friends', methods=['GET'])
 @login_required
 def get_friends():
-    name = request.args.get('q')
     return jsonify(
-        friends=[serialize(u, ['name'])
-            for u in db.session.query(User).filter_by(name=name).all()]
+        friends=[serialize(u, ['name']) for u in db.session.query(User).all()]
     )
 
