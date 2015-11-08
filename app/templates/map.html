@@ -80,10 +80,9 @@
 
       $.ajax({
         type:'GET',
-        url:"http://localhost:5000/last_riding_info",
+        url:"/last_riding_info",
       }).done(
         function(data) {
-          console.log(data);
           var path = data.tracking;
           last_riding_id = data.last_riding_id;
 
@@ -120,7 +119,7 @@
             (function poll(){
               setInterval(function() {
                 $.ajax({
-                  url: "http://localhost:5000/tracking",
+                  url: "/tracking",
                   type: "GET",
                 })
                 .done(function(data) {
