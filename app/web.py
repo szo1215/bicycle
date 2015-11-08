@@ -72,11 +72,11 @@ def get_last_riding_info():
     last_riding = db.session.query(Riding.id, Riding.created_date)\
                     .join(User)\
                     .filter_by(id=session['user'])\
-                    .order_by(Riding.created_date)\
-                    .limit(1)
-    sub = last_riding.subquery('last')
+                    .order_by(Riding.created_date.desc())\
+                    .limit(1).first()
+
     gpses = db.session.query(GPS)\
-                      .filter_by(riding_id=sub.c.id)\
+                      .filter_by(riding_id=last_riding.id)\
                       .order_by(GPS.id).all()
     if gpses:
         for gps in gpses:
@@ -86,7 +86,7 @@ def get_last_riding_info():
         end_time = gpses[len(gpses)-1].timestamp
 
         for i, g in enumerate(gpses):
-            if i+1 != len(gpses):
+            if len(gpses) >= 2 and i+1 != len(gpses):
                 first = gpses[i]
                 second = gpses[i+1]
                 coef = math.cos(second.latitude / 180. * math.pi)
@@ -102,9 +102,8 @@ def get_last_riding_info():
     return jsonify(tracking=tracking,
             distance=str(distance) + "km",
             avg_speed=str(avg_speed) + "km/h" ,
-            last_riding_id=last_riding.first().id,
-            last_riding_date=last_riding.first()
-            .created_date.strftime('%Y. %m. %d')
+            last_riding_id=last_riding.id,
+            last_riding_date=last_riding.created_date.strftime('%Y. %m. %d')
     )
 
 
@@ -124,7 +123,7 @@ def get_tracking():
     last_riding = db.session.query(Riding.id)\
                     .join(User)\
                     .filter_by(id=session['user'])\
-                    .order_by(Riding.created_date)\
+                    .order_by(Riding.created_date.desc())\
                     .limit(1)
     sub = last_riding.subquery('last')
     gps = db.session.query(GPS)\
