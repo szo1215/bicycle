@@ -71,7 +71,7 @@ def get_last_riding_info():
     sub = db.session.query(Riding.id)\
                     .join(User)\
                     .filter_by(id=session['user'])\
-                    .order_by(Riding.created_date.desc())\
+                    .order_by(Riding.created_date)\
                     .limit(1)\
                     .subquery('last')
     gpses = db.session.query(GPS)\
