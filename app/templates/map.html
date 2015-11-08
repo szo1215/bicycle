@@ -90,6 +90,18 @@
             strokeOpacity: 0.6,
             strokeWeight: 6
           });
+
+          if(path.length > 0) {
+            var divide = (0 + (path.length-1)) / 2;
+
+            map.addMarker({
+              lat: path[path.length-1][0],
+              lng: path[path.length-1][1],
+              title: 'destination'
+            });
+
+            map.setCenter(path[divide][0], path[divide][1]);
+          }
         }
       ).fail(
         function(error) {
