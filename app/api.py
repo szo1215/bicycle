@@ -1,4 +1,7 @@
 # -*- coding:utf-8 -*-
+import math
+import time
+
 from bcrypt import hashpw
 from flask import jsonify, redirect, request, session, Blueprint
 from sqlalchemy import and_
@@ -11,18 +14,47 @@ from models import GPS, Riding, User
 api = Blueprint('api', __name__, template_folder='templates', 
                 url_prefix='/api')
 
+ONE_DEGREE = 1000. * 10000.8 / 90.
+
 
 @api.route('/gps/', methods=['POST'])
 def post_gps():
+    distance = 0
+    avg_speed = 0
+    riding_id = request.values.get('riding_id')
+
     form = GPSForm(csrf_enabled=False)
     if form.validate_on_submit():
         gps = GPS()
         form.populate_obj(gps)
         db.session.add(gps)
         db.session.commit()
-        return jsonify(result="success")
+
+        gpses = db.session.query(GPS)\
+                          .filter_by(riding_id=riding_id)\
+                          .order_by(GPS.id).all()
+
+        if gpses:
+            start_time = gpses[0].timestamp
+            end_time = gpses[len(gpses)-1].timestamp
+
+            for i, g in enumerate(gpses):
+                if i+1 != len(gpses):
+                    first = gpses[i]
+                    second = gpses[i+1]
+                    coef = math.cos(second.latitude / 180. * math.pi)
+                    x = second.latitude - first.latitude
+                    y = (second.longitude - first.longitude) * coef
+                    distance += math.sqrt(x * x + y * y) * ONE_DEGREE
+
+            avg_speed = round(float(distance / 1000) /
+                     (float((end_time - start_time).seconds) / float(3600)), 1)
+            distance = round(float(distance / 1000), 1)
+
+        return jsonify(result="success", avg_speed=avg_speed,
+                       distance=distance)
     return jsonify(result="fail")
-    
+
 
 @api.route('/gps/', methods=['GET'])
 def get_gps():
