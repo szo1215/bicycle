@@ -48,7 +48,9 @@ def post_gps():
                     distance += math.sqrt(x * x + y * y) * ONE_DEGREE
 
             avg_speed = round(float(distance / 1000) /
-                     (float((end_time - start_time).seconds) / float(3600)), 1)
+                        (1 if float((end_time - start_time).seconds) == 0 else 
+                         float((end_time - start_time).seconds) /
+                         float(3600)), 1)
             distance = round(float(distance / 1000), 1)
 
         return jsonify(result="success", avg_speed=avg_speed,

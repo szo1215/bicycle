@@ -17,19 +17,19 @@
   <div class="column_right">
     <table class="table riding-info">
       <tr>
-        <th>마지막 라이딩 정보<th>
+        <th>라이딩 정보<th>
       </tr>
       <tr>
         <th>평균속도</th>
-        <td class="avg_speed">20km/h</td>
+        <td class="avg_speed"></td>
       </tr>
       <tr>
         <th>거리</th>
-        <td class="distance">20KM</td>
+        <td class="distance"></td>
       </tr>
       <tr>
         <th>날짜</th>
-        <td class="date">2015. 01. 01</td>
+        <td class="date"></td>
       </tr>
     </table>
     <table class="table riding-info">
@@ -70,6 +70,7 @@
 </div>
   <script>
     $(document).ready(function() {
+      var last_riding_id;
       var map = new GMaps({
           el: '#map',
           lat: 37.566609,
@@ -83,12 +84,17 @@
       }).done(
         function(data) {
           var path = data.tracking;
+          last_riding_id = data.last_riding_id;
 
           if(path.length > 0) {
             var divide = (0 + (path.length-1)) / 2;
 
-            map.setCenter(path[divide][0], path[divide][1]);
+            $('.riding-info .avg_speed').html(data.avg_speed);
+            $('.riding-info .distance').html(data.distance);
+            $('.riding-info .date').html(data.last_riding_date);
 
+            map.setCenter(path[divide][0], path[divide][1]);
+ 
             map.drawPolyline({
               path: path,
               strokeColor: 'blue',
@@ -109,9 +115,39 @@
               verticalAlgin: 'top',
               horizontalAlign: 'center',
             });
+
+            (function poll(){
+              setInterval(function() {
+                $.ajax({
+                  url: "http://localhost:5000/tracking",
+                  type: "GET",
+                })
+                .done(function(data) {
+                  if(last_riding_id !== data.last_riding_id) {
+                    map.removeMarkers();
+                    map.removePolylines();
+
+                    map.addMarker({
+                      lat: data.path[0][0],
+                      lng: data.path[0][1],
+                      title: 'destination'
+                    });
+
+                    map.drawPolyline({
+                      path: path,
+                      strokeColor: 'blue',
+                      strokeOpacity: 0.6,
+                      strokeWeight: 6
+                    });
+
+                  }
+                });
+              }, 1000 * 3);
+            })();
           }
         }
       );
     });
-  </script>
+
+</script>
 {% endblock %}
