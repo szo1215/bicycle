@@ -5,6 +5,10 @@ env.user = 'ubuntu'
 env.key_filename = ['Kya.pem']
 
 
-def hello():
-    run('ls')
+def deploy():
+    run('cd bicycle')
+    run('. env/bin/activate')
+    run('git pull upstream master')
+    run('alembic upgrade head')
+    run('nohup python run.py &')
 
