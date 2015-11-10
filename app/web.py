@@ -1,11 +1,13 @@
 # -*- coding:utf-8 -*-
 from datetime import datetime
 import math
+import redis
 import time
 
 from bcrypt import hashpw
 from flask import (jsonify, redirect, render_template, request, session, 
                    url_for, Blueprint)
+from sqlalchemy.sql import func
 
 from app import db
 from decorators import web_login_required
@@ -15,6 +17,10 @@ from models import GPS, Riding, User
 ONE_DEGREE = 1000. * 10000.8 / 90.
 
 web = Blueprint('web', __name__, template_folder='templates')
+
+pool = redis.ConnectionPool(host='localhost', port=6379, db=0)
+r = redis.Redis(connection_pool=pool)
+
 
 def serialize(Object, attribute=[]):
     d = {}
@@ -136,3 +142,14 @@ def get_tracking():
 
     return jsonify(last_riding_id=last_riding.first().id, path=path)
 
+
+@web.route('/ranking', methods=['GET'])
+@web_login_required
+def get_ranking():
+    subs = db.session.query(Riding.user_id,
+                            func.max(Riding.avg_speed).label('avg_speed'))\
+                     .group_by(Riding.user_id).subquery('sub')
+    rankings = db.session.query(User.name, subs.c.avg_speed).join(subs).all()
+    for ranking in rankings:
+        r.zadd('riding_rank', ranking.name, ranking.avg_speed)
+    return jsonify(scores=r.zrange('riding_rank', 0, 5, 'WITHSCORES'))
