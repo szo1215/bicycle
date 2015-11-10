@@ -28,6 +28,7 @@ class Riding(db.Model):
     title = Column(String(255))
     created_date = Column(DateTime(timezone=True),
                           nullable=False, default=now(), index=True)
+    avg_speed = Column(Float, default=0)
     gpses = relationship('GPS', backref='riding')
     riding_ranks = relationship('RidingRank', backref='riding_ranks')
 
