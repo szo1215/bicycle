@@ -12,3 +12,12 @@ def login_required(f):
         return redirect(url_for('login.get_sign_up'))
     return decorated_function
 
+
+def web_login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user' in session:
+            return f(*args, **kwargs)
+        return redirect(url_for('web.get_login'))
+    return decorated_function
+

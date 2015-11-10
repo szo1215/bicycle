@@ -8,7 +8,7 @@ from flask import (jsonify, redirect, render_template, request, session,
                    url_for, Blueprint)
 
 from app import db
-from decorators import login_required
+from decorators import web_login_required
 from forms import SignUpForm
 from models import GPS, Riding, User
 
@@ -29,7 +29,7 @@ def serialize(Object, attribute=[]):
 
 
 @web.route('/')
-@login_required
+@web_login_required
 def index():
     return render_template('map.html')
 
@@ -58,11 +58,11 @@ def post_login():
 def post_logout():
     if 'user' in session:
         session.pop('user', None)
-    return redirect(url_for('.index'))
+    return redirect(url_for('web.index'))
 
 
 @web.route('/last_riding_info', methods=['GET'])
-@login_required
+@web_login_required
 def get_last_riding_info():
     distance = 0
     avg_speed = 0
@@ -108,7 +108,7 @@ def get_last_riding_info():
 
 
 @web.route('/friends', methods=['GET'])
-@login_required
+@web_login_required
 def get_friends():
     return jsonify(
         friends=[serialize(u, ['name']) for u in db.session.query(User).all()]
@@ -116,7 +116,7 @@ def get_friends():
 
 
 @web.route('/tracking', methods=['GET'])
-@login_required
+@web_login_required
 def get_tracking():
     path = []
 
