@@ -28,7 +28,7 @@ def post_gps():
         gps = GPS()
         form.populate_obj(gps)
         db.session.add(gps)
-        db.session.commit()
+        db.session.flush()
 
         gpses = db.session.query(GPS)\
                           .filter_by(riding_id=riding_id)\
@@ -53,6 +53,10 @@ def post_gps():
                          float(3600)), 1)
             distance = round(float(distance / 1000), 1)
 
+            riding = db.session.query(Riding).filter_by(id=riding_id)
+            riding.avg_speed = avg_speed
+
+        db.session.commit()
         return jsonify(result="success", avg_speed=avg_speed,
                        distance=distance)
     return jsonify(result="fail")
