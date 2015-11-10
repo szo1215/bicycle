@@ -2,3 +2,9 @@
   width: 1000px;
   height: 1000px;
 }
+
+.logout {
+  float: right;
+  margin-top: 7px;
+  margin-right: 10px;
+}
