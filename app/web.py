@@ -31,7 +31,7 @@ def serialize(Object, attribute=[]):
 @web.route('/')
 @web_login_required
 def index():
-    return render_template('map.html')
+    return render_template('map.html', name=session['name'])
 
 
 @web.route('/login', methods=['GET'])
@@ -50,6 +50,7 @@ def post_login():
 
     if hashpw(str(password), str(user.password)) == str(user.password):
         session['user'] = user.id
+        session['name'] = user.name
         return redirect(url_for('web.index'))
     return redirect(url_for('web.login'))
 
