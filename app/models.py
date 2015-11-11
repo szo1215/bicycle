@@ -54,5 +54,5 @@ class RidingRank(db.Model):
     created_date = Column(DateTime(timezone=True),
                           nullable=False, default=now(), index=True)
     riding_id = Column(Integer, ForeignKey('riding.id'))
-    avg_speed = Column(Float)
+    avg_speed = Column(Float, default=0.0)
 
