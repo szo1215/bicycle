@@ -67,7 +67,7 @@
           last_riding_id = data.last_riding_id;
 
           if(path.length > 0) {
-            var divide = (0 + (path.length-1)) / 2;
+            var divide = parseInt((0 + (path.length-1)) / 2);
 
             $('.riding-info .avg_speed').html(data.avg_speed);
             $('.riding-info .distance').html(data.distance);
