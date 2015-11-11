@@ -42,9 +42,9 @@ def post_gps():
                 if i+1 != len(gpses):
                     first = gpses[i]
                     second = gpses[i+1]
-                    coef = math.cos(second.latitude / 180. * math.pi)
-                    x = second.latitude - first.latitude
-                    y = (second.longitude - first.longitude) * coef
+                    coef = math.cos(float(second.latitude) / 180. * math.pi)
+                    x = float(second.latitude) - float(first.latitude)
+                    y = (float(second.longitude) - float(first.longitude)) * coef
                     distance += math.sqrt(x * x + y * y) * ONE_DEGREE
 
             avg_speed = round(float(distance / 1000) /
