@@ -111,7 +111,8 @@ def post_sign_out():
 
 @api.route('/riding', methods=['POST'])
 def post_riding():
-    riding = Riding(user_id=request.values.get('user_id'))
+    riding = Riding(user_id=request.values.get('user_id'),
+                    title=u'나의 라이딩')
     db.session.add(riding)
     db.session.commit()
     return jsonify(result='success', riding_id=riding.id)
