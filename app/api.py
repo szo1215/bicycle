@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 import math
+import redis
 import time
 
 from bcrypt import hashpw
@@ -15,6 +16,9 @@ api = Blueprint('api', __name__, template_folder='templates',
                 url_prefix='/api')
 
 ONE_DEGREE = 1000. * 10000.8 / 90.
+
+pool = redis.ConnectionPool(host='localhost', port=6379, db=0)
+r = redis.Redis(connection_pool=pool)
 
 
 @api.route('/gps/', methods=['POST'])
@@ -56,9 +60,16 @@ def post_gps():
             riding = db.session.query(Riding).filter_by(id=riding_id)
             riding.avg_speed = avg_speed
 
+            user = db.session.query(User)\
+                             .join(Riding)\
+                             .filter_by(id=riding_id)\
+                             .first()
+            zrank = (0 if r.zrank('riding_rank', user.name)
+                    is None else r.zrank('riding_rank', user.name) + 1)
         db.session.commit()
         return jsonify(result="success", avg_speed=avg_speed,
-                       distance=distance, title=riding.first().title)
+                       distance=distance, title=riding.first().title,
+                       ranking=zrank)
     return jsonify(result="fail")
 
 
