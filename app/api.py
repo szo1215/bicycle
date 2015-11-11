@@ -58,7 +58,7 @@ def post_gps():
 
         db.session.commit()
         return jsonify(result="success", avg_speed=avg_speed,
-                       distance=distance)
+                       distance=distance, title=riding.title)
     return jsonify(result="fail")
 
 
