@@ -64,6 +64,7 @@
       }).done(
         function(data) {
           var path = data.tracking;
+          var accumulate_path = [];
           last_riding_id = data.last_riding_id;
 
           if(path.length > 0) {
@@ -106,6 +107,7 @@
                   if(last_riding_id !== data.last_riding_id) {
                     map.removeMarkers();
                     map.removePolylines();
+                    accumulate_path.push(data.path);
 
                     map.addMarker({
                       lat: data.path[0][0],
@@ -114,7 +116,7 @@
                     });
 
                     map.drawPolyline({
-                      path: path,
+                      path: accumulate_path,
                       strokeColor: 'blue',
                       strokeOpacity: 0.6,
                       strokeWeight: 6
